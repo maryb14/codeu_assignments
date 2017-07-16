@@ -10,9 +10,11 @@ class Solution {
 public:
     Solution(const vector < vector <bool> > &inputArray){
         arrayToSolve = inputArray;
-        initializeExplored();
+        exploredCells = vector < vector <bool> > (arrayToSolve.size(), vector < bool > (arrayToSolve[0].size(), false));
         islands = 0;
         solve();
+    }
+    void printSolution() {
         cout<<islands<<"\n";
     }
 private:
@@ -21,13 +23,6 @@ private:
     vector < vector <bool> > exploredCells;
     queue < pair <int, int> > positionsQueue;
     int islands;
-    void initializeExplored(){
-        for(int i = 0; i < arrayToSolve.size(); ++i){
-            exploredCells.push_back(vector <bool> ());
-            for(int j = 0; j < arrayToSolve[i].size(); ++j)
-                exploredCells[i].push_back(false);
-        }
-    }
     void solve(){
         for(int i = 0; i < arrayToSolve.size(); ++i){
             for(int j = 0; j < arrayToSolve[i].size(); ++j){
@@ -41,6 +36,32 @@ private:
             }
         }
     }
+    vector < pair <int, int> > generateNeighbours(pair <int, int> coords){
+        vector < pair <int, int> > toAdd = {make_pair(1, 0), make_pair(-1, 0), make_pair(0, 1), make_pair(0, -1)};
+        vector < pair <int, int> > positions;
+        for(int i = 0; i < 4; ++i){
+            positions.push_back(make_pair(coords.first + toAdd[i].first, coords.second + toAdd[i].second));
+        }
+        return positions;
+    }
+    bool isExplored(pair <int, int> position){
+        return exploredCells[position.first][position.second];
+    }
+    bool isPartOfIsland(pair <int, int> position){
+        return arrayToSolve[position.first][position.second];
+    }
+    bool isValid(pair <int, int> position){
+        return (position.first < arrayToSolve.size() && position.first >= 0 && position.second >= 0 && position.second < arrayToSolve[0].size());
+    }
+    vector < pair <int, int> > getValidPositions(vector < pair <int, int> > positions){
+        vector < pair <int, int> > validPositions;
+        for(int i = 0; i < positions.size(); ++i){
+            if(isValid(positions[i]))
+                validPositions.push_back(positions[i]);
+        }
+        return validPositions;
+    }
+
     void exploreFromPosition(int line, int column){
         pair <int, int> currentPos;
         positionsQueue.push(make_pair(line, column));
@@ -49,24 +70,10 @@ private:
             positionsQueue.pop();
             exploredCells[currentPos.first][currentPos.second] = true;
             //now explore in the 4 directions from the correct position
-            if(currentPos.first - 1 >= 0){
-                if(!exploredCells[currentPos.first - 1][currentPos.second] && arrayToSolve[currentPos.first - 1][currentPos.second]){
-                    positionsQueue.push(make_pair(currentPos.first - 1, currentPos.second));
-                }
-            }
-            if(currentPos.first + 1 < arrayToSolve.size()){
-                if(!exploredCells[currentPos.first + 1][currentPos.second] && arrayToSolve[currentPos.first + 1][currentPos.second]){
-                    positionsQueue.push(make_pair(currentPos.first + 1, currentPos.second));
-                }
-            }
-            if(currentPos.second - 1 >= 0){
-                if(!exploredCells[currentPos.first][currentPos.second - 1] && arrayToSolve[currentPos.first][currentPos.second - 1]){
-                    positionsQueue.push(make_pair(currentPos.first, currentPos.second - 1));
-                }
-            }
-            if(currentPos.second + 1 < arrayToSolve[0].size()){
-                if(!exploredCells[currentPos.first][currentPos.second + 1] && arrayToSolve[currentPos.first][currentPos.second + 1]){
-                    positionsQueue.push(make_pair(currentPos.first, currentPos.second + 1));
+            vector < pair <int, int> > validPositions = getValidPositions(generateNeighbours(currentPos));
+            for(int i = 0; i < validPositions.size(); ++i){
+                if(!isExplored(validPositions[i]) && isPartOfIsland(validPositions[i])){
+                    positionsQueue.push(validPositions[i]);
                 }
             }
         }
@@ -102,6 +109,7 @@ int main()
     }
     else {
         Solution newSolution(inputArray);
+        newSolution.printSolution();
     }
     return 0;
 }
