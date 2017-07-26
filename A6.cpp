@@ -3,7 +3,7 @@
 
 using namespace std;
 
-vector <int> GetPositions(vector <int> permutation) {
+vector <int> GetPositions(const vector <int> &permutation) {
     vector <int> positions(permutation.size());
     for(int i = 0; i < permutation.size(); ++i) {
         positions[permutation[i]] = i;
@@ -11,7 +11,7 @@ vector <int> GetPositions(vector <int> permutation) {
     return positions;
 }
 
-void PrintOutput(vector < pair <int, int> > moves_to_final_permutation) {
+void PrintOutput(const vector < pair <int, int> > &moves_to_final_permutation) {
     for(int i = 0; i < moves_to_final_permutation.size(); ++i){
         pair <int, int> car_move = moves_to_final_permutation[i];
         cout << "move from " << car_move.first << " to " << car_move.second << "\n";
@@ -25,7 +25,7 @@ void RegisterNextMove(int &move_from, int &move_to, vector < pair <int, int> > &
     moves.push_back(next_move);
 }
 
-vector < pair <int,  int> > Solve(vector <int> &initial_permutation, vector <int> final_permutation) {
+vector < pair <int,  int> > Solve(vector <int> &initial_permutation, const vector <int> &final_permutation) {
     vector <int> current_positions = GetPositions(initial_permutation);
     vector <int> final_positions = GetPositions(final_permutation);
     pair <int, int> next_move;
