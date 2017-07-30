@@ -7,7 +7,7 @@ using namespace std;
 //of consecutive natural numbers 0 to N
 //Output: vector < pair <int, int> > - a sequence of moves which transform the initial permutation into the final permutation
 //Time complexity: linear in the size of the input permutations - O(N)
-vector < pair <int, int> > Solve(const vector <int> &initial_permutation, const vector <int> &final_permutation);
+vector < pair <int, int> > GetSequenceOfMoves(const vector <int> &initial_permutation, const vector <int> &final_permutation);
 
 //Input: const vector <int> &permutation - a permutation of consecutive natural numbers: 0 to N
 //Output: vector <int> - a mapping from the natural numbers to their position in the permutation
@@ -82,7 +82,7 @@ int main()
     return 0;
 }
 
-vector < pair <int,  int> > Solve(const vector <int> &initial_permutation, const vector <int> &final_permutation) {
+vector < pair <int,  int> > GetSequenceOfMoves(const vector <int> &initial_permutation, const vector <int> &final_permutation) {
     vector <int> current_positions = GetPositions(initial_permutation);
     vector <int> final_positions = GetPositions(final_permutation);
     pair <int, int> next_move;
@@ -117,7 +117,7 @@ void RegisterNextMove(int &move_from, int &move_to, vector < pair <int, int> > &
 }
 
 vector < pair <int, int> > Test(vector <int> initial_permutation, vector <int> final_permutation) {
-    return Solve(initial_permutation, final_permutation);
+    return GetSequenceOfMoves(initial_permutation, final_permutation);
 }
 
 void PrintOutput(const vector < pair <int, int> > &moves_to_final_permutation) {
